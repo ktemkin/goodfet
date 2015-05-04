@@ -73,7 +73,7 @@ class MAXUSBApp(FacedancerApp):
         self.ack_cmd            = FacedancerCommand(self.app_num, 0x00, b'\x01')
 
     def read_register(self, reg_num, ack=False):
-        if self.verbose > 1:
+        if self.verbose > 2:
             print(self.app_name, "reading register 0x%02x" % reg_num)
 
         self.read_register_cmd.data = bytearray([ reg_num << 3, 0 ])

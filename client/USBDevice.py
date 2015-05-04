@@ -148,6 +148,14 @@ class USBDevice:
 
         # and then the type
         req_type = req.get_type()
+
+        #HACK for HID
+        if req_type == USB.request_type_class and req.request == 1:
+            recipient.handle_get_report(self)
+            return
+
+
+
         handler_entity = None
         if req_type == USB.request_type_standard:
             handler_entity = recipient
