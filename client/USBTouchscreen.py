@@ -13,6 +13,19 @@ REPORT_ID_MOUSE        = 0x02
 REPORT_ID_MULTITOUCH   = 0x04
 REPORT_ID_MT_MAX_COUNT = 0x10
 
+
+class USBHIDClass(USBClass):
+    name = "USB HID device"
+
+    def setup_request_handlers(self):
+        self.request_handlers = {
+            0x01 : self.handle_finger_count_request,
+        }
+
+    def handle_finger_count_request(self, req):
+        self.interface.configuration.device.send_control_message(b'\x10\x08')
+
+
 class USBTouchscreenInterface(USBInterface):
     name = "USB Touchscreen interface"
 
@@ -66,6 +79,9 @@ class USBTouchscreenInterface(USBInterface):
             
         self.queue = []
 
+        self.device_class = USBHIDClass()
+        self.device_class.set_interface(self)
+
         while True:
             packet = self.get_next_replay_packet()
             
@@ -112,16 +128,8 @@ class USBTouchscreenInterface(USBInterface):
         return bytes(packet)
 
 
-    def handle_get_report(self, device):
-
-        #Read the next HID packet to be sent from the replay file...
-        if self.queue:
-            packet_one = self.queue.pop(0)
-
-        else:
-            return
-
-        device.send_control_message(packet_one)
+    def handle_get_report(self, device, value):
+        device.send_control_message(b'\x10\x0a')
 
 
 
