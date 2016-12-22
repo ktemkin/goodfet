@@ -26,9 +26,13 @@ from Facedancer import *
 from MAXUSBApp import *
 from USBMassStorage import *
 
+if os.environ.get('GOODFET') == "spi":
+    from Raspdancer import *
+    fd = Raspdancer(verbose=1)
+else:
+    sp = GoodFETSerialPort()
+    fd = Facedancer(sp, verbose=1)
 
-sp = GoodFETSerialPort()
-fd = Facedancer(sp, verbose=1)
 u = MAXUSBApp(fd, verbose=1)
 
 d = USBMassStorageDevice(u, sys.argv[1], verbose=3)

@@ -12,8 +12,13 @@ from Facedancer import *
 from MAXUSBApp import *
 from USBSerial import *
 
-sp = GoodFETSerialPort()
-fd = Facedancer(sp, verbose=1)
+if os.environ.get('GOODFET') == "spi":
+    from Raspdancer import *
+    fd = Raspdancer(verbose=0)
+else:
+    sp = GoodFETSerialPort()
+    fd = Facedancer(sp, verbose=1)
+
 u = MAXUSBApp(fd, verbose=1)
 
 d = USBSerialDevice(u, verbose=4)
